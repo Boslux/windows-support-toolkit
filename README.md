@@ -34,7 +34,7 @@ windows-support-toolkit/
 From PowerShell:
 
 ```powershell
-cd "d:\MyApps\Windows Support Toolkit\scripts"
+cd "Windows Support Toolkit\scripts"
 .\launcher.ps1
 ```
 
