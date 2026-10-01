@@ -1,0 +1,6 @@
+# Hide project notes from GitHub
+*.md
+!README.md
+
+# Ignore generated diagnostic reports
+reports/
