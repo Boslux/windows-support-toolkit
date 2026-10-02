@@ -80,13 +80,26 @@ function Get-RecentSystemErrors {
     param([ValidateRange(1,30)][int]$Days = 7, [ValidateRange(1,500)][int]$Limit = 100)
     $start = (Get-Date).AddDays(-$Days)
     try {
-        $events = @(Get-WinEvent -FilterHashtable @{ LogName = 'System'; Level = @(1,2); StartTime = $start } -MaxEvents $Limit -ErrorAction Stop | ForEach-Object { [pscustomobject]@{ Level = $_.LevelDisplayName; EventId = $_.Id } })
-        @($events | Group-Object Level,EventId | ForEach-Object {
-            [pscustomobject]@{ Level = $_.Group[0].Level; EventId = $_.Group[0].EventId; Count = $_.Count }
+        @(Get-WinEvent -FilterHashtable @{ LogName = 'System'; Level = @(1,2); StartTime = $start } -MaxEvents $Limit -ErrorAction Stop | ForEach-Object {
+            [pscustomobject]@{
+                Time = $_.TimeCreated
+                Level = $_.LevelDisplayName
+                Provider = $_.ProviderName
+                EventId = $_.Id
+                MachineName = $_.MachineName
+                UserId = $_.UserId
+                RecordId = $_.RecordId
+                ProcessId = $_.ProcessId
+                ThreadId = $_.ThreadId
+                Task = $_.TaskDisplayName
+                Opcode = $_.OpcodeDisplayName
+                Message = $_.Message
+                EventData = @($_.Properties | ForEach-Object { $_.Value })
+            }
         })
     } catch {
         if ($_.FullyQualifiedErrorId -match 'NoMatchingEventsFound') { @() }
-        else { @([pscustomobject]@{ Time = Get-Date; Level = 'Unavailable'; EventId = $null; Details = 'System log query unavailable.' }) }
+        else { @([pscustomobject]@{ Time = Get-Date; Level = 'Unavailable'; EventId = $null; ErrorType = $_.Exception.GetType().Name; Details = $_.Exception.Message }) }
     }
 }
 
