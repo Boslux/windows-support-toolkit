@@ -1,14 +1,4 @@
-$services = "WinRM", "Spooler", "MpsSvc"
-
-Write-Host ""
-Write-Host "Service Check" -ForegroundColor Green
-foreach ($serviceName in $services) {
-    $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
-
-    if ($service) {
-        Write-Host "$($service.Name) - Status: $($service.Status)"
-    }
-    else {
-        Write-Host "$serviceName - Not found"
-    }
-}
+[CmdletBinding()]
+param([string[]]$Name = @('WinRM','Spooler','MpsSvc'))
+Import-Module (Join-Path $PSScriptRoot 'SupportToolkit.psm1') -Force
+Write-Section -Title 'Service Check (read only)' -Data (Get-ServiceInfo -Name $Name)
