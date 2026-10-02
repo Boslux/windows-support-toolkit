@@ -87,7 +87,6 @@ function Get-RecentSystemErrors {
                 Provider = $_.ProviderName
                 EventId = $_.Id
                 MachineName = $_.MachineName
-                UserId = $_.UserId
                 RecordId = $_.RecordId
                 ProcessId = $_.ProcessId
                 ThreadId = $_.ThreadId
